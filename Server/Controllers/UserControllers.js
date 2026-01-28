@@ -34,10 +34,14 @@ module.exports.signup = async (req, res) => {
 
     // Generate JWT
     const token = jwt.sign(
-      { id: user._id },
+      {
+        id: user._id,
+        role: "user",
+      },
       process.env.SECRET_KEY,
-      { expiresIn: "7d" }
+      { expiresIn: "1d" }
     );
+
 
     res.status(201).json({
       message: "User registered successfully",
@@ -85,10 +89,14 @@ module.exports.login = async (req, res) => {
 
     // Generate JWT
     const token = jwt.sign(
-      { id: user._id },
+      {
+        id: user._id,
+        role: "user",
+      },
       process.env.SECRET_KEY,
-      { expiresIn: "7d" }
+      { expiresIn: "1d" }
     );
+
 
     res.status(200).json({
       message: "Login successful",
@@ -119,13 +127,13 @@ module.exports.submit_complaint = async (req, res) => {
       userId: userid,
       title: req.body.title,
       description: req.body.description,
-      status: 'Pending',
+      status: 'Submitted',
       img_of_problem: imageUrl,
     }
 
-    await db.Complaint.create(data);
+    const complaint = await db.Complaint.create(data);
 
-    res.status(201).json({ message: "Complaint submitted successfully", complaint_id });
+    res.status(201).json({ message: "Complaint submitted successfully", complaint_id ,complaint});
   } catch (error) {
     console.log(error)
     res.status(500).json({ message: error.message });
@@ -135,7 +143,10 @@ module.exports.submit_complaint = async (req, res) => {
 module.exports.get_complaints = async (req, res) => {
   try {
     const userid = req.user.id;
+    console.log("hello")
+    console.log("Fetching complaints for user ID:", userid);
     const complaints = await db.Complaint.find({ userId: userid }).sort({ createdAt: -1 });
+    console.log(complaints)
     res.status(200).json({ complaints });
   } catch (error) {
     console.log(error)
@@ -176,10 +187,14 @@ module.exports.adminlogin = async (req, res) => {
 
     // Generate JWT
     const token = jwt.sign(
-      { id: user._id },
+      {
+        id: user._id,
+        role: "admin",
+      },
       process.env.SECRET_KEY,
-      { expiresIn: "7d" }
+      { expiresIn: "1d" }
     );
+
 
     res.status(200).json({
       message: "Login successful",
@@ -238,7 +253,6 @@ module.exports.get_admin_dashboard = async (req, res) => {
 }
 
 module.exports.officerlogin = async (req, res) => {
-
   try {
     const { username, password } = req.body;
 
@@ -252,7 +266,6 @@ module.exports.officerlogin = async (req, res) => {
       });
     }
 
-    // Compare password
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
@@ -261,12 +274,15 @@ module.exports.officerlogin = async (req, res) => {
       });
     }
 
-    // Generate JWT
     const token = jwt.sign(
-      { id: user._id },
+      {
+        id: user._id,
+        role: "officer",
+      },
       process.env.SECRET_KEY,
-      { expiresIn: "7d" }
+      { expiresIn: "1d" }
     );
+
 
     res.status(200).json({
       message: "Login successful",
@@ -280,8 +296,9 @@ module.exports.officerlogin = async (req, res) => {
 
 module.exports.get_all_complaints = async (req, res) => {
   try {
-     const complaints = await db.Complaint.find().populate("userId", "fullname email username")
-     res.status(200).json({ complaints });
+    const complaints = await db.Complaint.find().populate("userId", "fullname email username")
+    console.log(complaints)
+    res.status(200).json({ complaints });
   } catch (error) {
     console.log(error)
     res.status(500).json({ message: error.message });
@@ -291,18 +308,19 @@ module.exports.get_all_complaints = async (req, res) => {
 
 module.exports.update_complaint_status = async (req, res) => {
   try {
-    const { id } = req.params;                 
-    const { status, remark, proof } = req.body;
-    // Allowed statuses
+    const { id } = req.params;
+    const { status, remark } = req.body;
+    console.log("Update request body:", req.body);
+    console.log("Update request file:", req.file);
+
+    /* ================= ALLOWED STATUSES ================= */
     const allowedStatus = [
       "Submitted",
-      "Accepted",
       "In Process",
-      "Completed",
+      "Resolved",
       "Rejected",
     ];
 
-    // Validate status
     if (!status || !allowedStatus.includes(status)) {
       return res.status(400).json({
         success: false,
@@ -310,7 +328,7 @@ module.exports.update_complaint_status = async (req, res) => {
       });
     }
 
-    // Find complaint
+    /* ================= FIND COMPLAINT ================= */
     const complaint = await db.Complaint.findById(id);
 
     if (!complaint) {
@@ -320,10 +338,10 @@ module.exports.update_complaint_status = async (req, res) => {
       });
     }
 
-    /* ---------- STATUS-SPECIFIC VALIDATION ---------- */
+    /* ================= STATUS-SPECIFIC VALIDATION ================= */
 
-    // Reject → remark required
-    if (status === "Rejected") {
+    // 🔴 Reject → remark required
+    if (status == "Rejected") {
       if (!remark || remark.trim() === "") {
         return res.status(400).json({
           success: false,
@@ -333,20 +351,26 @@ module.exports.update_complaint_status = async (req, res) => {
       complaint.remark = remark;
     }
 
-    // Completed → proof required
-    if (status === "Completed") {
-      if (!proof) {
+
+    if (status === "Resolved") {
+      if (!req.file) {
         return res.status(400).json({
           success: false,
           message: "Proof image is required",
         });
       }
-      complaint.img_of_proof = proof;
+
+      const uploadResult = await cloudinary_upload(req.file.path);
+
+      complaint.img_of_proof = uploadResult;
+
+      fs.unlinkSync(req.file.path);
     }
 
-    // Update status
     complaint.status = status;
+    complaint.officer = req.user.id;
 
+    console.log("Updated complaint:", complaint);
     await complaint.save();
 
     return res.status(200).json({
@@ -362,3 +386,23 @@ module.exports.update_complaint_status = async (req, res) => {
     });
   }
 };
+
+
+module.exports.complaint_status = async (req, res) => {
+  try {
+    const complaint = await db.Complaint.findOne({
+      complaint_id: req.params.id
+    })
+      .populate("officer", "name email")
+      .populate("userId", "name email");
+
+    if (!complaint) {
+      return res.status(404).json({ message: "Complaint not found" });
+    }
+
+    res.json(complaint);
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ message: "Server error" });
+  }
+}

@@ -5,13 +5,21 @@ const app = express();
 const PORT = 8000;
 const routes = require('../routes/apiroutes');
 
+const allowedOrigins = process.env.DOMAINS.split(",");
+console.log(allowedOrigins);
 const corsOptions = {
-    origin: process.env.DOMAIN,
-    methods: ['GET', 'POST', 'PUT', 'DELETE','PATCH'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    exposedHeaders: ['Content-Length'],
-    credentials: true
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
 };
+
 
 app.use(cors(corsOptions));
 app.use(express.json())
@@ -22,6 +30,6 @@ app.get('/', (req, res) => {
     res.send('Welcome To My Server');
 });
 
-app.listen(PORT, () => {
+app.listen(PORT,"0.0.0.0", () => {
     console.log(`Server was Started at Port ${PORT}`);
 })
