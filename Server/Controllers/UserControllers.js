@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const { cloudinary_upload } = require('../Utility/cloudinary.js');
 const { generateComplaintId } = require('../Utility/id_generator.js');
+
 module.exports.signup = async (req, res) => {
   try {
     const { fullname, username, email, password } = req.body;

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { officerlogin } from "../url/url";
 import axios from "axios";
-import {useStateContext} from "../Provider/StateProvider"
+import { useStateContext } from "../Provider/StateProvider"
 function OfficerLogin() {
   const navigate = useNavigate();
   const { setToken } = useStateContext();
@@ -21,13 +21,19 @@ function OfficerLogin() {
     try {
       const res = await axios.post(officerlogin, data)
       console.log(res)
-      if(res.status === 200){
+      if (res.status === 200) {
         localStorage.setItem("token", res.data.token);
         setToken(res.data.token);
         navigate('/officer-dashboard')
       }
     } catch (error) {
       console.log(error)
+
+      if (error.response && error.response.data.message) {
+        alert(error.response.data.message); // ✅ show backend message
+      } else {
+        alert("Login failed");
+      }
     }
 
   }

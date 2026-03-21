@@ -29,6 +29,11 @@ function AdminLogin() {
       }
     } catch (error) {
       console.log("Error during admin login:", error);
+      if (error.response && error.response.data.message) {
+        alert(error.response.data.message);
+      } else {
+        alert("Login failed");
+      }
     }
   }
   return (

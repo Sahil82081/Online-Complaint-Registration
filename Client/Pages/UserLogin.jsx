@@ -5,7 +5,7 @@ import axios from "axios";
 import { useStateContext } from "../Provider/StateProvider";
 function UserLogin() {
   const navigate = useNavigate();
-const { setToken } = useStateContext();
+  const { setToken } = useStateContext();
   const [data, setData] = useState({
     username: "",
     password: "",
@@ -31,7 +31,11 @@ const { setToken } = useStateContext();
       navigate("/user-dashboard");
     } catch (error) {
       console.error("Error during registration:", error);
-      alert("Registration failed. Please try again.");
+      if (error.response && error.response.data.message) {
+        alert(error.response.data.message); 
+      } else {
+        alert("Login failed");
+      }
     }
   };
 

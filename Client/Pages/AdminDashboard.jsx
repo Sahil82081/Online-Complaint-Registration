@@ -57,7 +57,8 @@ export default function AdminDashboard() {
     }
 
     try {
-      const res = await axios.post(addofficer, newOfficer);
+      const res = await axios.post(addofficer, newOfficer,
+        { headers: { Authorization: `Bearer ${token}` } });
       console.log(res.data);
       setOfficers((prev) => [...prev, res.data.officer]);
     } catch (error) {
