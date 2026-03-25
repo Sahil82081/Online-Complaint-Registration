@@ -241,10 +241,11 @@ module.exports.addofficer = async (req, res) => {
 
 module.exports.get_admin_dashboard = async (req, res) => {
   try {
-    const complaints = await db.Complaint.find().select('userId title description status officer complaint_id img_of_problem').populate("userId", "fullname email username").populate("officer", "fullname username");
+    const complaints = await db.Complaint.find().select('userId title description status officer complaint_id img_of_problem remark').populate("userId", "fullname email username").populate("officer", "fullname username");
     const officer = await db.Officer.find()
     const users = await db.User.find().select('fullname email')
 
+    console.log(complaints)
     res.status(200).json({ complaints, officer, users });
 
   } catch (error) {

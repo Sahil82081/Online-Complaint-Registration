@@ -244,7 +244,6 @@ export default function AdminDashboard() {
               <tr key={o.id} className="border-t text-center">
                 <td className="p-2">{o.name}</td>
                 <td className="p-2">{o.username}</td>
-                <td className="p-2">{o.password}</td>
               </tr>
             ))}
           </tbody>
