@@ -1,8 +1,8 @@
-import { useState , useEffect } from "react";
+import { useState, useEffect } from "react";
 import TrackComplaint from "../Components/TrackComplaint.jsx";
 import axios from "axios";
 import { useStateContext } from "../Provider/StateProvider.jsx";
-import { submit_complaint,get_complaints } from '../url/url.js'
+import { submit_complaint, get_complaints } from '../url/url.js'
 import { useNavigate } from "react-router-dom";
 function UserDashboard() {
 
@@ -19,21 +19,31 @@ function UserDashboard() {
     description: "",
   });
 
-    const get_complaint = async (token) => {
-      const response = await axios.get(get_complaints, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        }
-      })
-      console.log("User complaints:", response.data.complaints);
-      setComplaints(response.data.complaints);
-    }
-  
-    useEffect(() => {
-      if(token){
-        get_complaint(token);
+  const [problemType, setProblemType] = useState("");
+  const problemOptions = [
+    "Road Problem",
+    "Electricity Problem",
+    "Water Pipeline",
+    "Garbage Issue",
+    "Street Light Issue",
+    "Other"
+  ];
+
+  const get_complaint = async (token) => {
+    const response = await axios.get(get_complaints, {
+      headers: {
+        Authorization: `Bearer ${token}`,
       }
-    }, [token])
+    })
+    console.log("User complaints:", response.data.complaints);
+    setComplaints(response.data.complaints);
+  }
+
+  useEffect(() => {
+    if (token) {
+      get_complaint(token);
+    }
+  }, [token])
 
   /* ================= IMAGE UPLOAD ================= */
   const handleImageUpload = (e) => {
@@ -72,7 +82,7 @@ function UserDashboard() {
       });
 
       console.log(res.data);
-      setComplaints((prev)=>[...prev,res.data.complaint]);
+      setComplaints((prev) => [...prev, res.data.complaint]);
       alert("Complaint registered successfully");
       setData({ title: "", description: "" });
       setImage(null);
@@ -159,14 +169,20 @@ function UserDashboard() {
               <label className="block text-gray-600 mb-1">
                 Complaint Title
               </label>
-              <input
-                type="text"
+
+              <select
                 name="title"
                 value={data.title}
                 onChange={handleChange}
-                placeholder="Enter complaint title"
                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-gray-400"
-              />
+              >
+                <option value="">Select Problem Type</option>
+                {problemOptions.map((item, index) => (
+                  <option key={index} value={item}>
+                    {item}
+                  </option>
+                ))}
+              </select>
             </div>
 
             {/* Description */}
@@ -220,7 +236,7 @@ function UserDashboard() {
       )}
 
       {/* ================= TRACK COMPLAINT ================= */}
-      {activeTab === "track" && <TrackComplaint complaints = {complaints}/>}
+      {activeTab === "track" && <TrackComplaint complaints={complaints} />}
     </div>
   );
 }

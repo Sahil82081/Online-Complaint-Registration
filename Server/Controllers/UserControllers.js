@@ -132,6 +132,7 @@ module.exports.submit_complaint = async (req, res) => {
       img_of_problem: imageUrl,
     }
 
+
     const complaint = await db.Complaint.create(data);
 
     res.status(201).json({ message: "Complaint submitted successfully", complaint_id ,complaint});
@@ -245,7 +246,7 @@ module.exports.get_admin_dashboard = async (req, res) => {
     const officer = await db.Officer.find()
     const users = await db.User.find().select('fullname email')
 
-    console.log(complaints)
+    // console.log(complaints)
     res.status(200).json({ complaints, officer, users });
 
   } catch (error) {
