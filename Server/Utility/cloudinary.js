@@ -1,4 +1,4 @@
-import { v2 as cloudinary } from 'cloudinary';
+const { v2: cloudinary } = require('cloudinary');
 
 cloudinary.config({
     cloud_name: 'dnb39bn2y',
@@ -6,8 +6,7 @@ cloudinary.config({
     api_secret: 'sSmEYK9KuMy8C2jBw-1SYaEchZc'
 });
 
-export const cloudinary_upload = async (localFilePath) => {
-
+const cloudinary_upload = async (localFilePath) => {
 
     if (!localFilePath) {
         console.error("❌ No file path provided.");
@@ -23,13 +22,17 @@ export const cloudinary_upload = async (localFilePath) => {
         });
 
         const optimizedUrl = cloudinary.url(uploadResult.public_id, {
-            fetch_format: "auto", 
-            quality: "auto", 
-            secure: true 
+            fetch_format: "auto",
+            quality: "auto",
+            secure: true
         });
+
         return optimizedUrl;
+
     } catch (error) {
         console.error("❌ Upload Error:", error);
         return null;
     }
 };
+
+module.exports = { cloudinary_upload };

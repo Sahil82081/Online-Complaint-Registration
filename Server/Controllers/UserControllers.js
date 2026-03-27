@@ -118,8 +118,8 @@ module.exports.submit_complaint = async (req, res) => {
     let imageUrl = null;
     if (req.file) {
       imageUrl = await cloudinary_upload(req.file.path);
+      fs.unlinkSync(req.file.path);
     }
-    fs.unlinkSync(req.file.path);
 
     const complaint_id = generateComplaintId();
 
@@ -128,6 +128,7 @@ module.exports.submit_complaint = async (req, res) => {
       userId: userid,
       title: req.body.title,
       description: req.body.description,
+      address: req.body.address,
       status: 'Submitted',
       img_of_problem: imageUrl,
     }
@@ -145,10 +146,7 @@ module.exports.submit_complaint = async (req, res) => {
 module.exports.get_complaints = async (req, res) => {
   try {
     const userid = req.user.id;
-    console.log("hello")
-    console.log("Fetching complaints for user ID:", userid);
     const complaints = await db.Complaint.find({ userId: userid }).sort({ createdAt: -1 });
-    console.log(complaints)
     res.status(200).json({ complaints });
   } catch (error) {
     console.log(error)
@@ -409,3 +407,24 @@ module.exports.complaint_status = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 }
+
+module.exports.delete_officer = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const officer = await db.Officer.findByIdAndDelete(id);
+
+    if (!officer) {
+      return res.status(404).json({ message: "Officer not found" });
+    }
+
+    res.status(200).json({
+      message: "Officer deleted successfully",
+      officer
+    });
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
+  }
+};

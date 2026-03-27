@@ -11,3 +11,4 @@ export const officerlogin = `${Domain}/api/officerlogin`;
 export const get_all_complaints = `${Domain}/api/get_all_complaints`;
 export const update_complaint_status = `${Domain}/api/update_complaint`;
 export const complaint_status = `${Domain}/api/complaint_status`;
+export const delete_officer = `${Domain}/api/delete_officer`;

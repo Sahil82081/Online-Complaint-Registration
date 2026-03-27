@@ -76,13 +76,17 @@ const ComplaintSchema = {
         type: String,
         required: true
     },
+    address: {
+        type: String,
+        required: true
+    },
     status: {
         type: String,
         required: true
     },
     img_of_problem: {
         type: String,
-        required: true
+        required: false
     },
     img_of_proof: {
         type: String,
@@ -90,9 +94,9 @@ const ComplaintSchema = {
     remark: {
         type: String,
     },
-    officer:{
-        type:Schema.Types.ObjectId,
-        ref:'Officer'
+    officer: {
+        type: Schema.Types.ObjectId,
+        ref: 'Officer'
     },
     createdAt: {
         type: Date,
@@ -100,4 +104,4 @@ const ComplaintSchema = {
     }
 }
 
-module.exports = { UserSchema, ComplaintSchema ,AdminSchema ,officerSchema};
+module.exports = { UserSchema, ComplaintSchema, AdminSchema, officerSchema };

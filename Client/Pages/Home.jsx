@@ -19,7 +19,7 @@ export default function HomePage() {
       {/* ================= HEADER ================= */}
       <header className="bg-gray-800 text-white p-4 flex justify-between items-center shadow">
         <h1 className="text-xl font-semibold">
-          Online Complaint Registration System
+          Municipal Online Civic Complaint System
         </h1>
 
         <div className="space-x-3">

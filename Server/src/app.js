@@ -6,7 +6,6 @@ const PORT = 8000;
 const routes = require('../routes/apiroutes');
 
 const allowedOrigins = process.env.DOMAINS.split(",");
-console.log(allowedOrigins);
 const corsOptions = {
   origin: (origin, callback) => {
     if (!origin || allowedOrigins.includes(origin)) {

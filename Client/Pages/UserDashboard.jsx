@@ -17,9 +17,9 @@ function UserDashboard() {
   const [data, setData] = useState({
     title: "",
     description: "",
+    address: ""
   });
 
-  const [problemType, setProblemType] = useState("");
   const problemOptions = [
     "Road Problem",
     "Electricity Problem",
@@ -71,6 +71,7 @@ function UserDashboard() {
     const formData = new FormData();
     formData.append("title", data.title);
     formData.append("description", data.description);
+    formData.append("address", data.address);
     if (image) formData.append("image", image);
 
     try {
@@ -196,6 +197,20 @@ function UserDashboard() {
                 value={data.description}
                 onChange={handleChange}
                 placeholder="Describe your issue"
+                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-gray-400"
+              />
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-gray-600 mb-1">
+                Address
+              </label>
+              <textarea
+                rows="4"
+                name="address"
+                value={data.address}
+                onChange={handleChange}
+                placeholder="Enter your address"
                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-gray-400"
               />
             </div>

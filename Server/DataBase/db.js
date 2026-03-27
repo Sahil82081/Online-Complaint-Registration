@@ -1,8 +1,7 @@
 const mongoose = require('mongoose');
 
-const { UserSchema, ComplaintSchema ,officerSchema,AdminSchema} = require('./Schema')
+const { UserSchema, ComplaintSchema, officerSchema, AdminSchema } = require('./Schema')
 
-console.log(process.env.DATABASE_URL)
 mongoose.connect(process.env.DATABASE_URL).then(() => {
     console.log("DataBase Connected");
 })

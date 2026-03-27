@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { addofficer, getAdminDashboard } from "../url/url";
+import { addofficer, getAdminDashboard ,delete_officer } from "../url/url";
 import { useStateContext } from '../Provider/StateProvider'
 import { useNavigate } from 'react-router-dom'
 export default function AdminDashboard() {
@@ -50,12 +50,10 @@ export default function AdminDashboard() {
 
   /* ================= FUNCTIONS ================= */
   const addOfficer = async () => {
-
     if (!newOfficer.name || !newOfficer.username || !newOfficer.password) {
       alert("All fields are required");
       return;
     }
-
     try {
       const res = await axios.post(addofficer, newOfficer,
         { headers: { Authorization: `Bearer ${token}` } });
@@ -66,6 +64,19 @@ export default function AdminDashboard() {
     }
     setNewOfficer({ name: "", username: "", password: "" });
   };
+
+  const deleteOfficer = async (id) => {
+    try {
+      const res = await axios.delete(`${delete_officer}/${id}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      console.log(res.data);
+      setOfficers(prev => prev.filter(officer => officer._id !== id));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
@@ -236,7 +247,7 @@ export default function AdminDashboard() {
             <tr>
               <th className="p-2">Officer Name</th>
               <th className="p-2">Username</th>
-              <th className="p-2">Password</th>
+              <th className="p-2">Delete</th>
             </tr>
           </thead>
           <tbody>
@@ -244,6 +255,15 @@ export default function AdminDashboard() {
               <tr key={o.id} className="border-t text-center">
                 <td className="p-2">{o.name}</td>
                 <td className="p-2">{o.username}</td>
+                <td className="p-2">
+                  <button
+                    onClick={() => deleteOfficer(o._id)}
+                    className="bg-red-600 text-white px-3 py-1 rounded text-sm"
+                  >
+                    Delete
+                  </button>
+                </td>
+
               </tr>
             ))}
           </tbody>

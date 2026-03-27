@@ -26,5 +26,7 @@ route.patch('/update_complaint/:id', userauth, role('officer'), upload.single("i
 route.post('/adminlogin', UserController.adminlogin);
 route.post('/addofficer', userauth, role('admin'), UserController.addofficer);
 route.get('/get_admin_dashboard', userauth, role('admin'), UserController.get_admin_dashboard);
+route.delete('/delete_officer/:id', userauth, role('admin'), UserController.delete_officer);
+
 
 module.exports = route
