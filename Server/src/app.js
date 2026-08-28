@@ -25,7 +25,7 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use('/api', routes);
 
-const url = process.env.SERVER_URL;
+const url = process.env.DOMAINS.split(',')[0];
 
 setInterval(async () => {
     try {
