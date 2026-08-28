@@ -27,21 +27,12 @@ app.use('/api', routes);
 
 const url = process.env.DOMAINS.split(',')[0];
 
-setInterval(async () => {
-    try {
-        const response = await fetch(url);
-        console.log(
-            `${new Date().toLocaleTimeString()} - Server pinged: ${response.status}`
-        );
-    } catch (error) {
-        console.log("Ping failed:", error.message);
-    }
-}, 780000); // Ping every 13 minutes (780,000 milliseconds)
 
 app.get('/', (req, res) => {
-    res.send('Welcome To My Server');
+  console.log("Health Check Request Received");
+  res.send('Welcome To My Server');
 });
 
 app.listen(PORT, () => {
-    console.log(`Server was Started at Port ${PORT}`);
+  console.log(`Server was Started at Port ${PORT}`);
 })
