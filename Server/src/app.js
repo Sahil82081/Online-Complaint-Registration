@@ -25,6 +25,19 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use('/api', routes);
 
+const url = process.env.SERVER_URL;
+
+setInterval(async () => {
+    try {
+        const response = await fetch(url);
+        console.log(
+            `${new Date().toLocaleTimeString()} - Server pinged: ${response.status}`
+        );
+    } catch (error) {
+        console.log("Ping failed:", error.message);
+    }
+}, 780000); // Ping every 13 minutes (780,000 milliseconds)
+
 app.get('/', (req, res) => {
     res.send('Welcome To My Server');
 });
