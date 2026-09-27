@@ -31,6 +31,7 @@ module.exports.signup = async (req, res) => {
       username,
       email,
       password: hashedPassword,
+      role: "user"
     });
 
     // Generate JWT
@@ -46,6 +47,7 @@ module.exports.signup = async (req, res) => {
 
     res.status(201).json({
       message: "User registered successfully",
+      role:user.role,
       token
     });
 
@@ -101,6 +103,7 @@ module.exports.login = async (req, res) => {
 
     res.status(200).json({
       message: "Login successful",
+      role:user.role,
       token
     });
 
@@ -198,6 +201,7 @@ module.exports.adminlogin = async (req, res) => {
 
     res.status(200).json({
       message: "Login successful",
+      role: user.role,
       token
     });
 
@@ -225,6 +229,7 @@ module.exports.addofficer = async (req, res) => {
       name,
       username,
       password: hashedPassword,
+      role: "officer"
     });
 
     res.status(201).json({
@@ -240,7 +245,7 @@ module.exports.addofficer = async (req, res) => {
 
 module.exports.get_admin_dashboard = async (req, res) => {
   try {
-    const complaints = await db.Complaint.find().select('userId title description status officer complaint_id img_of_problem remark').populate("userId", "fullname email username").populate("officer", "fullname username");
+    const complaints = await db.Complaint.find().select('userId title description status officer complaint_id img_of_problem remark img_of_proof').populate("userId", "fullname email username").populate("officer", "fullname username");
     const officer = await db.Officer.find()
     const users = await db.User.find().select('fullname email')
 
@@ -287,6 +292,7 @@ module.exports.officerlogin = async (req, res) => {
 
     res.status(200).json({
       message: "Login successful",
+      role:user.role,
       token
     });
   } catch (error) {

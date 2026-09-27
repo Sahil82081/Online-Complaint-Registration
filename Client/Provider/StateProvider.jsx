@@ -10,6 +10,8 @@ export const StateProvider = ({ children }) => {
   return (
     <StateContext.Provider
       value={{
+        user,
+        setUser,
         token,
         setToken,
         setLoading
@@ -20,5 +22,4 @@ export const StateProvider = ({ children }) => {
   );
 };
 
-// ✅ Custom Hook
 export const useStateContext = () => useContext(StateContext);

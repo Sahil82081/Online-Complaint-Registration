@@ -9,25 +9,60 @@ import AdminDashboard from "../Pages/AdminDashboard";
 import HomePage from "../Pages/Home";
 import UserRegister from "../Pages/UserRegister";
 import ComplaintStatus from "../Pages/ComplaintStatus";
+
 import { StateProvider } from "../Provider/StateProvider";
+import ProtectedRoute from "../Components/ProtectedRoute";
 
 function App() {
   return (
     <StateProvider>
       <Router>
         <Routes>
+
+          {/* Public Routes */}
           <Route path="/" element={<HomePage />} />
-          <Route path="/complaint-status/:id" element={<ComplaintStatus />} />
+          <Route
+            path="/complaint-status/:id"
+            element={<ComplaintStatus />}
+          />
 
           <Route path="/user-login" element={<UserLogin />} />
           <Route path="/user-register" element={<UserRegister />} />
-          <Route path="/user-dashboard" element={<UserDashboard />} />
 
           <Route path="/officer-login" element={<OfficerLogin />} />
-          <Route path="/officer-dashboard" element={<OfficerDashboard />} />
 
           <Route path="/admin-login" element={<AdminLogin />} />
-          <Route path="/admin-dashboard" element={<AdminDashboard />} />
+
+          {/* User Protected Route */}
+          <Route
+            path="/user-dashboard"
+            element={
+              <ProtectedRoute role="user">
+                <UserDashboard />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Officer Protected Route */}
+          <Route
+            path="/officer-dashboard"
+            element={
+              <ProtectedRoute role="officer">
+                <OfficerDashboard />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Admin Protected Route */}
+          <Route
+            path="/admin-dashboard"
+            element={
+              <ProtectedRoute role="admin">
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+
         </Routes>
       </Router>
     </StateProvider>

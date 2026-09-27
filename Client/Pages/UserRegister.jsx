@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-
+import { useStateContext } from "../Provider/StateProvider";
 import { signup } from "../url/url"
 export default function UserRegister() {
   const [formData, setFormData] = useState({
@@ -12,7 +12,7 @@ export default function UserRegister() {
     confirmPassword: "",
   });
   const navigate = useNavigate();
-
+const { setToken, setUser } = useStateContext();
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -27,6 +27,8 @@ export default function UserRegister() {
     try {
       const response = await axios.post(signup, formData);
       console.log(response.data);
+      setUser(response.data.role);
+      setToken(response.data.token);
       localStorage.setItem("token",response.data.token);
       navigate("/user-dashboard");
     } catch (error) {

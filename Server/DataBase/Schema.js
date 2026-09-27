@@ -18,6 +18,10 @@ const UserSchema = {
     password: {
         type: String,
         required: true
+    },
+    role:{
+        type: String,
+        required: true
     }
 }
 
@@ -39,6 +43,10 @@ const AdminSchema = {
     password: {
         type: String,
         required: true
+    },
+    role: {
+        type: String,
+        required: true
     }
 }
 
@@ -53,6 +61,10 @@ const officerSchema = {
         unique: true
     },
     password: {
+        type: String,
+        required: true
+    },
+    role: {
         type: String,
         required: true
     }

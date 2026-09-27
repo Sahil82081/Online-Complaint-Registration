@@ -5,7 +5,7 @@ import axios from "axios";
 import { useStateContext } from '../Provider/StateProvider'
 function AdminLogin() {
   const navigate = useNavigate();
-  const { setToken } = useStateContext()
+  const { setToken, setUser } = useStateContext()
 
   const [data, setData] = useState({
     username: "",
@@ -23,6 +23,7 @@ function AdminLogin() {
       if (response.data.token) {
         localStorage.setItem("token", response.data.token);
         setToken(response.data.token);
+        setUser(response.data.role);
         navigate('/admin-dashboard');
       } else {
         alert("Invalid credentials");

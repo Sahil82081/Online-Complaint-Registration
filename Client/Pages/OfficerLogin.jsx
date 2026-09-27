@@ -5,7 +5,7 @@ import axios from "axios";
 import { useStateContext } from "../Provider/StateProvider"
 function OfficerLogin() {
   const navigate = useNavigate();
-  const { setToken } = useStateContext();
+  const { setToken, setUser } = useStateContext();
 
 
   const [data, setData] = useState({
@@ -24,6 +24,7 @@ function OfficerLogin() {
       if (res.status === 200) {
         localStorage.setItem("token", res.data.token);
         setToken(res.data.token);
+        setUser(res.data.role);
         navigate('/officer-dashboard')
       }
     } catch (error) {

@@ -29,6 +29,7 @@ export default function AdminDashboard() {
       }
     });
     console.log(res.data);
+    console.log(res.data.complaints);
     setComplaints(res.data.complaints);
     setOfficers(res.data.officer);
     setUser(res.data.users);
